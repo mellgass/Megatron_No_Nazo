@@ -20,6 +20,7 @@
   .broadcast{grid-template-columns:1fr}
   .portrait{max-height:230px;object-position:center}
 }
+.sprite-download{display:inline-block;margin-top:.8rem;color:#173c5e;font-weight:700}
 </style>
 <main>
 <header class="screen" aria-labelledby="title">
@@ -41,9 +42,10 @@
 <small>Gameplay</small><h2 id="mission">One pilot.<br>Two forms.</h2>
 <p>Choose which of three satellites to capture first. Every capture earns an upgrade usable in both forms. The third crowns you King Starscream.</p>
 <div class="controls"><button class="form" data-form="jet" aria-pressed="true">Jet form</button><button class="form" data-form="robot" aria-pressed="false">Robot form</button></div>
+<a class="sprite-download" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAgCAYAAACinX6EAAACu0lEQVR42u1Z4c2jMAxNEIPACKhbcFJFd2jnqL45YAeqSrAFuhFyk+D70XPrzzjBAXqi0hcJqYLEiZ+fn5PUmJ+2vMEIACPAJ/uQfuKizzcZ9KayNtZWsib6l/vr956BeQsAxhhTHz/DyVCzS6MvGkusXcMozXgEgIOPbNSkAp1rVxqAwGqA6A/5dzYO7hsIMYFbrP7n2+PZohrACNAV2awtOh9/QumBfXCOTTTgHQ0jy0Hoigy6IgNOd54CtB+PPGfNKgAu91cezlFvCxDKwZlycEHhrY+vfhrnF2lAiJ5aIfO1cnDPhfaH/OkIj6gG9K7I4NfvP5Y7T8HZTQqcb489BXeqP+Ri2UMWUDZIzDjfAHjkcR60m24V/a1Y0F4ZzQkTQtGnKfmMNBsrjUvW5Cg16MuxvbdEG3EYp3TygcPH/Q9HTl/59gBIDiAIdEL8zQHawnkqjDFC2AupE1UFlkQ/xIJYXaDOnZSlNjTGVz6tBgCf84jw3Pe57W3sAef0lZv26iYMpO80ramsTfYuUugcTbn26iY5LwGi0YX0rYeGheVRWng5ONPedcJH+3LgggBgrvsEJCRIc336Q266IoNycJN0aCprQ2nQVNbWI0B9fKXbZH3sfVNZexJ2kPzInISOmL581ii39hjLFyRFVWIkBgofzRi0Te8LEg3tY5zXjPHNJV1k4H5eY5d/42OlOdKYndzl/igv2lNiLAt8YPESWHtA4P005TvVil7MkVcCgUcHjBFFkUcNjIFJahzdrHii4EksmACAC6FKTUGhzlMlLQPqykGQ5ojdEPnuIH0B1AQt2epSU9uWzCEJI7Uj2dSeDXb9xwiWRq0I837tv3N/6JY4mYsWottU1nJD9DtVWewnfY91fs1/Dzg2tMeIXhxeT3Fx8b1fs3OMSaXY/h+RAjGOzAniT/O0vzrwLFBX+dKVAAAAAElFTkSuQmCC" download="starscream-sprites.png">Download sprite sheet</a>
 <p id="form-copy" aria-live="polite">Fly the shoot ’em up approach and fight your way to the airlock.</p>
 </div>
-<div class="display"><canvas class="sprite" id="sprite" width="16" height="16" role="img" aria-label="Jet form pixel illustration"></canvas></div>
+<div class="display"><canvas class="sprite" id="sprite" width="32" height="32" role="img" aria-label="Jet form pixel illustration"></canvas></div>
 </section>
 <section class="section grid" aria-labelledby="hardware">
 <div>
@@ -120,17 +122,17 @@ byId('start').addEventListener('click', () => {
   }
   byId('start').textContent = frame === frames.length - 1 ? '↺ Replay commercial' : '▶ Next scene';
 });
-const sprites = {
-  jet: [[7,1,2,14,'#e9e7ff'],[6,4,4,8,'#a7c9ff'],[2,8,12,4,'#638bdf'],[1,10,14,2,'#b886ff'],[7,4,2,3,'#74336d'],[5,12,2,3,'#ff9c80'],[9,12,2,3,'#ff9c80']],
-  robot: [[6,1,4,4,'#a7c9ff'],[7,2,2,2,'#ff82bb'],[4,5,8,5,'#d75583'],[1,4,3,7,'#638bdf'],[12,4,3,7,'#638bdf'],[6,5,4,4,'#e9e7ff'],[4,10,3,5,'#638bdf'],[9,10,3,5,'#638bdf']]
-};
+const atlas = new Image();
 const canvas = byId('sprite');
 const context = canvas.getContext('2d');
+let currentForm = 'jet';
+atlas.addEventListener('load', () => showForm(currentForm));
+atlas.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAgCAYAAACinX6EAAACu0lEQVR42u1Z4c2jMAxNEIPACKhbcFJFd2jnqL45YAeqSrAFuhFyk+D70XPrzzjBAXqi0hcJqYLEiZ+fn5PUmJ+2vMEIACPAJ/uQfuKizzcZ9KayNtZWsib6l/vr956BeQsAxhhTHz/DyVCzS6MvGkusXcMozXgEgIOPbNSkAp1rVxqAwGqA6A/5dzYO7hsIMYFbrP7n2+PZohrACNAV2awtOh9/QumBfXCOTTTgHQ0jy0Hoigy6IgNOd54CtB+PPGfNKgAu91cezlFvCxDKwZlycEHhrY+vfhrnF2lAiJ5aIfO1cnDPhfaH/OkIj6gG9K7I4NfvP5Y7T8HZTQqcb489BXeqP+Ri2UMWUDZIzDjfAHjkcR60m24V/a1Y0F4ZzQkTQtGnKfmMNBsrjUvW5Cg16MuxvbdEG3EYp3TygcPH/Q9HTl/59gBIDiAIdEL8zQHawnkqjDFC2AupE1UFlkQ/xIJYXaDOnZSlNjTGVz6tBgCf84jw3Pe57W3sAef0lZv26iYMpO80ramsTfYuUugcTbn26iY5LwGi0YX0rYeGheVRWng5ONPedcJH+3LgggBgrvsEJCRIc336Q266IoNycJN0aCprQ2nQVNbWI0B9fKXbZH3sfVNZexJ2kPzInISOmL581ii39hjLFyRFVWIkBgofzRi0Te8LEg3tY5zXjPHNJV1k4H5eY5d/42OlOdKYndzl/igv2lNiLAt8YPESWHtA4P005TvVil7MkVcCgUcHjBFFkUcNjIFJahzdrHii4EksmACAC6FKTUGhzlMlLQPqykGQ5ojdEPnuIH0B1AQt2epSU9uWzCEJI7Uj2dSeDXb9xwiWRq0I837tv3N/6JY4mYsWottU1nJD9DtVWewnfY91fs1/Dzg2tMeIXhxeT3Fx8b1fs3OMSaXY/h+RAjGOzAniT/O0vzrwLFBX+dKVAAAAAElFTkSuQmCC";
 function showForm(form) {
-  context.clearRect(0,0,16,16);
-  for (const [x,y,w,h,color] of sprites[form]) {
-    context.fillStyle = color;
-    context.fillRect(x,y,w,h);
+  currentForm = form;
+  if (atlas.complete && atlas.naturalWidth) {
+    context.clearRect(0, 0, 32, 32);
+    context.drawImage(atlas, form === 'jet' ? 0 : 32, 0, 32, 32, 0, 0, 32, 32);
   }
   canvas.setAttribute('aria-label', form + ' form pixel illustration');
   byId('form-copy').textContent = form === 'jet'
